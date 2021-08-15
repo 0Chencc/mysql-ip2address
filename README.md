@@ -4,8 +4,13 @@ mysql - ip2address
 在对数据库进行分析的时候，经常会遇到一些只有ip地址但没有归属地的情况，考虑到很多人都遇到过这种情况，于是把这几行代码发出来供大家使用
 
 ```shell
-python startup.py -d 库名 -t 表名 -m 1 -u 用户id字段 -i 表里的ip字段
+python startup.py -d 库名 -t 表名 -m 1 -u 用户id字段 -i 表里的ip字段 -m 1
 ```
+-m 1 mode为1的时候，默认将ipv4的地址查归属地
+
+-m 2 mode为2的时候，会将ip戳转换成ipv4再查归属地
+
+大家分清楚使用场景
 
 利用的是纯真ip库，通过本地解析了纯真ip库之后，在ip字段之后插入一列数据，例如字段是ip，则会在字段之后插入ip_address，对每个ip查询归属地之后循环插入。
 
