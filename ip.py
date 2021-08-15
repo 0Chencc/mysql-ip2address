@@ -11,14 +11,19 @@ def getipaddress(useridn, ip, table, conn):
     iscreate = cur.fetchall()
     print(iscreate[0])
     if iscreate[0]['iscreate'] == 0:
-        cur.execute(f'alter table {table} add {ip}_address varchar(50) null after {ip};')
+        cur.execute(f'alter table {table} add {ip}_address varchar(50) default \'\' null after {ip};')
         conn.commit()
     cur.execute(f'select {useridn},{ip} from {table}')
     data = cur.fetchall()
     for i in data:
-        address = "".join(cz.lookup(i[f'{ip}']))
-        userid = i[f'{useridn}']
-        cur.execute(f'update {table} set {ip}_address = \'{address}\' where {useridn} = {userid}')
+        if i[f'{ip}'] != '':
+            try:
+                address = "".join(cz.lookup(i[f'{ip}']))
+            except:
+                print(i[f'{ip}'])
+                pass
+            userid = i[f'{useridn}']
+            cur.execute(f'update {table} set {ip}_address = \'{address}\' where {useridn} = {userid}')
     conn.commit()
     cur.close()
     conn.close()
