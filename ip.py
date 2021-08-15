@@ -5,7 +5,7 @@ cz = QQwry()
 cz.load_file('qqwry.dat', loadindex=True)
 
 
-def getipaddress(useridn, ip, table, conn):
+def getipaddress(useridn, ip, table, conn,mode):
     cur = conn.cursor(pymysql.cursors.SSDictCursor)
     cur.execute(f'select count(*) as iscreate from information_schema.columns where table_name = \'{table}\' and column_name = \'{ip}_address\'')
     iscreate = cur.fetchall()
@@ -13,7 +13,10 @@ def getipaddress(useridn, ip, table, conn):
     if iscreate[0]['iscreate'] == 0:
         cur.execute(f'alter table {table} add {ip}_address varchar(50) default \'\' null after {ip};')
         conn.commit()
-    cur.execute(f'select {useridn},{ip} from {table}')
+    if mode == 1:
+        cur.execute(f'select {useridn},{ip} from {table}')
+    elif mode ==2:
+        cur.execute(f'select {useridn},inet_ntoa({ip}) as {ip} from {table}')
     data = cur.fetchall()
     for i in data:
         if i[f'{ip}'] != '':
