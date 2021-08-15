@@ -53,7 +53,8 @@ if __name__ == '__main__':
             useridn = value
         elif opt in ('-i','--ip'):
             ip = value
-    # 
+    if mode in ('1','2'):
+        getipaddress(useridn=useridn, ip=ip, table=table, conn=conn, mode=mode)
+    #
     # if mode == '1':
     #     print(f'db is {db},table is {table},mode is {mode},useridn is {useridn},ip is {ip}')
-    getipaddress(useridn=useridn,ip=ip,table=table,conn=conn,mode=mode)
