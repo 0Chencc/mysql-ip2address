@@ -1,16 +1,15 @@
 from qqwry import QQwry
 import pymysql
-
+from phone import Phone
 cz = QQwry()
 cz.load_file('qqwry.dat', loadindex=True)
 
 
 def getipaddress(useridn, ip, table, conn,mode,db):
     cur = conn.cursor(pymysql.cursors.SSDictCursor)
-
-    print(f'select count(*) as iscreate from information_schema.columns where table_name = \'{table}\' and column_name = \'{ip}_address\' and TABLE_SCHEMA={db}')
+    print(f'select count(*) as iscreate from information_schema.columns where table_name = \'{table}\' and column_name = \'{ip}_address\' and TABLE_SCHEMA=\'{db}\'')
     cur.execute(
-        f'select count(*) as iscreate from information_schema.columns where table_name = \'{table}\' and column_name = \'{ip}_address\' and TABLE_SCHEMA={db}')
+        f'select count(*) as iscreate from information_schema.columns where table_name = \'{table}\' and column_name = \'{ip}_address\' and TABLE_SCHEMA=\'{db}\'')
     iscreate = cur.fetchall()
     print(iscreate[0])
     if iscreate[0]['iscreate'] == 0:
@@ -30,8 +29,12 @@ def getipaddress(useridn, ip, table, conn,mode,db):
                 print(i[f'{ip}'])
                 pass
             userid = i[f'{useridn}']
-            cur.execute(f'update {table} set {ip}_address = \'{address}\' where {useridn} = {userid}')
+            try:
+                cur.execute(f'update {table} set {ip}_address = \'{address}\' where {useridn} = {userid}')
+            except:
+                pass
     conn.commit()
     cur.close()
     conn.close()
     print('finsh!')
+
